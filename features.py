@@ -5,10 +5,10 @@ def get_features(info):
     features = []
 
     ''' aspect '''
-    if 'pf' in gr:
-        aspect = 'pf'
-    elif 'ipf' in gr:
+    if 'ipf' in gr:
         aspect = 'ipf'
+    elif 'pf' in gr:
+        aspect = 'pf'
     else:
         aspect = None
     features.append(aspect)

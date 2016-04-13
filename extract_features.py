@@ -49,7 +49,7 @@ class Corpus():
         """
         HEADER = ('token', 'lemma', 'aspect', 'form', 'transitivity',
                   'number', 'tense', 'mood', 'person', 'voice')
-        with open('feature_matrix.csv', 'w') as out:
+        with open('feature_test.csv', 'w') as out:
             writer = csv.writer(out, delimiter=',', quotechar='"')
             writer.writerow(HEADER)
 
