@@ -10,6 +10,9 @@ c = base.cursor()
 re_lat = re.compile('[a-zA-Z]')
 
 def suffixal():
+    # todo: pair the verbs and assign suffixes
+    # todo: align the formats of two verb lists
+    # todo: extract information about aspect classes
     #SELECT source FROM headword JOIN descriptor ON descriptor.word_id=headword.id
     # SELECT descriptor_id FROM aspect_pair
     c.execute('SELECT source FROM headword JOIN descriptor ON descriptor.word_id=headword.id WHERE descriptor.id IN '
@@ -20,6 +23,7 @@ def suffixal():
 
 
 def prefixal():
+    # todo: extract information about aspect classes
     with open(PATH_TO_HTML, 'r', encoding='utf-8') as f:
         html = f.read()
     root = lxml.html.fromstring(html)
