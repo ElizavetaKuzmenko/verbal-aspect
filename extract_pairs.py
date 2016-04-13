@@ -30,7 +30,7 @@ def prefixal():
             cells = [cell for cell in cells if re_lat.search(cell) is None]
             cell_groups = zip(*(iter(cells),) * 3)
             for group in cell_groups:
-                f.write('\t'.join(group) + '\n')
+                f.write(','.join(group) + '\n')
 
 
 
