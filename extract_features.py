@@ -1,6 +1,6 @@
 # coding: utf-8
 
-import xml.etree.ElementTree as ET
+import lxml.etree as ET
 import os, csv
 from features import get_features
 
@@ -22,13 +22,17 @@ class Corpus():
             word = ''.join(elem.itertext()).lower().replace('`', '') # remove stress
             for item in elem.iter('ana'):
                 info = item
+                try:
+                    info_prev = [t for t in info.getparent().getprevious() if t.tag == 'ana'][0]
+                except TypeError:
+                    info_prev = None
                 break
             #lemma = [item.get("lex") for item in elem.iter('ana')] # todo: deal with homonymy?
             lemma = info.get('lex')
             # get POS tag
             tag = info.get("gr").split('=')[0].split(',')[0]
             if lemma in verbs and tag == 'V':
-                features = get_features(info)
+                features = get_features(info, info_prev)
                 verb = Verb(lemma, word, *features)
                 self.verbs.add(verb)
 
@@ -61,7 +65,7 @@ class Corpus():
                 writer.writerow(row)
 
 class Verb():
-    def __init__(self, lemma, wf, aspect, tense, trans, voice, form, mood, person, number):
+    def __init__(self, lemma, wf, aspect, tense, person, number, trans, voice, form, mood):
         self.lemma = lemma
         self.wf = wf
         self.form = form

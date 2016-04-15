@@ -1,7 +1,12 @@
 # coding: utf-8
 
-def get_features(info):
+
+def get_features(info, info_prev):
     gr = info.get('gr')
+    if info_prev is not None:
+        lex_prev = info_prev.get('lex')
+    else:
+        lex_prev = None
     features = []
 
     ''' aspect '''
@@ -24,6 +29,26 @@ def get_features(info):
         tense = None
     features.append(tense)
 
+    ''' person '''
+    if '1p' in gr:
+        pers = '1'
+    elif '2p' in gr:
+        pers = '2'
+    elif '3p' in gr:
+        pers = '3'
+    else:
+        pers = None
+    features.append(pers)
+
+    ''' number '''
+    if 'sg' in gr:
+        num = 'sg'
+    elif 'pl' in gr:
+        num = 'pl'
+    else:
+        num = None
+    features.append(num)
+
     ''' transitivity '''
     if 'tran' in gr:
         trans = 'tran'
@@ -45,8 +70,22 @@ def get_features(info):
     features.append(voice)
 
     ''' form '''
-    if 'inf' in gr:
+    if 'inf' in gr and lex_prev != 'быть':
         form = 'inf'
+    elif lex_prev == 'быть':
+        features[1] = 'fut'
+        gr_prev = info_prev.get('gr')
+        if 'sg' in gr_prev:
+            features[3] = 'sg'
+        elif 'pl' in gr_prev:
+            features[3] = 'pl'
+        if '1p' in gr_prev:
+            features[2] = '1'
+        elif '2p' in gr_prev:
+            features[2] = '2'
+        elif '3p' in gr_prev:
+            features[2] = '3'
+        form = 'fin'
     elif 'partcp' in gr:
         form = 'partcp'
     elif 'ger' in gr:
@@ -63,25 +102,5 @@ def get_features(info):
     else:
         mood = None
     features.append(mood)
-
-    ''' person '''
-    if '1p' in gr:
-        pers = '1'
-    elif '2p' in gr:
-        pers = '2'
-    elif '3p' in gr:
-        pers = '3'
-    else:
-        pers = None
-    features.append(pers)
-
-    ''' number '''
-    if 'sg' in gr:
-        num = 'sg'
-    elif 'pl' in gr:
-        num = 'pl'
-    else:
-        num = None
-    features.append(num)
 
     return features
