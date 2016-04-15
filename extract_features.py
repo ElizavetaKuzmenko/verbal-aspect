@@ -9,16 +9,15 @@ PATH_TO_VERBS = ['verbs_prefixes.csv', 'verbs_zal.txt']
 
 class Corpus():
     def __init__(self):
-        self.verbs = set([])
-        self.partcp = set([])
-        self.gerund = set([])
-        self.feature_array = None
+        self.verbs = []
+        self.partcp = []
+        self.gerund = []
 
 
     def load_file(self, path, verbs):
         print(path)
         """
-        Open RNC XML and get all unique tokens
+        Open RNC XML and get all tokens
         """
         tree = ET.parse(path)
         for elem in tree.iter('w'):
@@ -41,10 +40,10 @@ class Corpus():
                 features = get_features(info, info_prev)
                 verb = Verb(lemma, word, *features)
                 if verb.form == 'partcp':
-                    self.partcp.add(verb)
+                    self.partcp.append(verb)
                 elif verb.form == 'ger':
-                    self.gerund.add(verb)
-                self.verbs.add(verb)
+                    self.gerund.append(verb)
+                self.verbs.append(verb)
 
 
     def load_dir(self, path, verbs):
