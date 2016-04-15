@@ -4,16 +4,19 @@ import lxml.etree as ET
 import os, csv
 from features import get_features
 
-PATH_TO_CORPUS = 'texts/anecdota'
+PATH_TO_CORPUS = 'texts'
 PATH_TO_VERBS = ['verbs_prefixes.csv', 'verbs_zal.txt']
 
 class Corpus():
     def __init__(self):
         self.verbs = set([])
+        self.partcp = set([])
+        self.gerund = set([])
         self.feature_array = None
 
 
     def load_file(self, path, verbs):
+        print(path)
         """
         Open RNC XML and get all unique tokens
         """
@@ -26,6 +29,9 @@ class Corpus():
                     info_prev = [t for t in info.getparent().getprevious() if t.tag == 'ana'][0]
                 except TypeError:
                     info_prev = None
+                except IndexError:
+                    info_prev = None
+                    #print(ET.tostring(info.getparent().getprevious(), encoding='utf-8'))
                 break
             #lemma = [item.get("lex") for item in elem.iter('ana')] # todo: deal with homonymy?
             lemma = info.get('lex')
@@ -34,6 +40,10 @@ class Corpus():
             if lemma in verbs and tag == 'V':
                 features = get_features(info, info_prev)
                 verb = Verb(lemma, word, *features)
+                if verb.form == 'partcp':
+                    self.partcp.add(verb)
+                elif verb.form == 'ger':
+                    self.gerund.add(verb)
                 self.verbs.add(verb)
 
 
@@ -58,6 +68,40 @@ class Corpus():
             writer.writerow(HEADER)
 
             for verb in self.verbs:
+                row = (
+                    verb.wf, verb.lemma, verb.aspect, verb.form, verb.transitivity,
+                    verb.number, verb.tense, verb.mood, verb.person, verb.voice
+                )
+                writer.writerow(row)
+
+    def participles(self):
+        """
+            Write featurized participles to csv file for inspection
+            """
+        HEADER = ('token', 'lemma', 'aspect', 'form', 'transitivity',
+                  'number', 'tense', 'mood', 'person', 'voice')
+        with open('participles.csv', 'w') as out:
+            writer = csv.writer(out, delimiter=',', quotechar='"')
+            writer.writerow(HEADER)
+
+            for verb in self.partcp:
+                row = (
+                    verb.wf, verb.lemma, verb.aspect, verb.form, verb.transitivity,
+                    verb.number, verb.tense, verb.mood, verb.person, verb.voice
+                )
+                writer.writerow(row)
+
+    def gerunds(self):
+        """
+            Write featurized gerunds to csv file for inspection
+            """
+        HEADER = ('token', 'lemma', 'aspect', 'form', 'transitivity',
+                  'number', 'tense', 'mood', 'person', 'voice')
+        with open('gerunds.csv', 'w') as out:
+            writer = csv.writer(out, delimiter=',', quotechar='"')
+            writer.writerow(HEADER)
+
+            for verb in self.gerund:
                 row = (
                     verb.wf, verb.lemma, verb.aspect, verb.form, verb.transitivity,
                     verb.number, verb.tense, verb.mood, verb.person, verb.voice
@@ -97,6 +141,8 @@ def run():
     corpus = Corpus()
     corpus.load_dir(os.path.join(os.getcwd(), PATH_TO_CORPUS), verbs)
     corpus.to_csv()
+    corpus.participles()
+    corpus.gerunds()
 
 
 
