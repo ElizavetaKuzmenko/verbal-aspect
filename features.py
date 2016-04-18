@@ -103,4 +103,6 @@ def get_features(info, info_prev):
         mood = None
     features.append(mood)
 
+    # to avoid empty cells because of NoneType
+    features = [str(f) for f in features]
     return features
