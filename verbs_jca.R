@@ -1,7 +1,7 @@
 library("ca")
 
 # slice the data
-part_data <- data[0:500, 3:10]
+part_data <- data[0:500, ][c("aspect", "form", "transitivity", "tense", "mood", "voice")]
 
 # different lambdas; this is for JCA
 jca <- mjca(part_data, nd = 2, lambda = "JCA")
