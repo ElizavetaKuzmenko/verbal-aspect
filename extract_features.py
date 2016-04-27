@@ -4,8 +4,10 @@ import lxml.etree as ET
 import os, csv
 from features import get_features
 
-PATH_TO_CORPUS = 'texts'
+PATH_TO_CORPUS = os.path.join(os.getcwd(), 'source/post1950/anecdota')
+#PATH_TO_CORPUS = os.path.join(os.getcwd(), 'texts')
 PATH_TO_VERBS = ['verbs_prefixes.csv', 'verbs_zal.txt']
+errors = open('Parse_errors.txt', 'w')
 
 class Corpus():
     def __init__(self):
@@ -24,6 +26,7 @@ class Corpus():
             word = ''.join(elem.itertext()).lower().replace('`', '') # remove stress
             for item in elem.iter('ana'):
                 info = item
+                print(info)
                 try:
                     info_prev = [t for t in info.getparent().getprevious() if t.tag == 'ana'][0]
                 except TypeError:
@@ -45,7 +48,6 @@ class Corpus():
                     self.gerund.add(verb)
                 self.verbs.add(verb)
 
-
     def load_dir(self, path, verbs):
         """
         Traverse a given directory and add all text files
@@ -54,15 +56,17 @@ class Corpus():
         for root, dirs, files in os.walk(path):
             for name in files:
                 if name.endswith('ml'):  # todo open all files, but throw warnings if they are not corpus files
-                    self.load_file(os.path.join(root, name), verbs)
-
+                    try:
+                        self.load_file(os.path.join(root, name), verbs)
+                    except:
+                          errors.write(path + '\n')
     def to_csv(self):
         """
         Write featurized verbs to csv file
         """
         HEADER = ('token', 'lemma', 'aspect', 'form', 'transitivity',
                   'number', 'tense', 'mood', 'person', 'voice')
-        with open('feature_matrix.csv', 'w') as out:
+        with open('feature_matrix_big.csv', 'w') as out:
             writer = csv.writer(out, delimiter=',', quotechar='"')
             writer.writerow(HEADER)
 
@@ -79,7 +83,7 @@ class Corpus():
             """
         HEADER = ('token', 'lemma', 'aspect', 'form', 'transitivity',
                   'number', 'tense', 'mood', 'person', 'voice')
-        with open('participles.csv', 'w') as out:
+        with open('participles_big.csv', 'w') as out:
             writer = csv.writer(out, delimiter=',', quotechar='"')
             writer.writerow(HEADER)
 
@@ -96,7 +100,7 @@ class Corpus():
             """
         HEADER = ('token', 'lemma', 'aspect', 'form', 'transitivity',
                   'number', 'tense', 'mood', 'person', 'voice')
-        with open('gerunds.csv', 'w') as out:
+        with open('gerunds_big.csv', 'w') as out:
             writer = csv.writer(out, delimiter=',', quotechar='"')
             writer.writerow(HEADER)
 
@@ -138,7 +142,7 @@ def load_verbs(path):
 def run():
     verbs = load_verbs(PATH_TO_VERBS)
     corpus = Corpus()
-    corpus.load_dir(os.path.join(os.getcwd(), PATH_TO_CORPUS), verbs)
+    corpus.load_dir(PATH_TO_CORPUS, verbs)
     corpus.to_csv()
     corpus.participles()
     corpus.gerunds()
@@ -148,3 +152,4 @@ def run():
 if __name__ == '__main__':
     # test()
     run()
+    errors.close()
