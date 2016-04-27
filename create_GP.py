@@ -81,7 +81,7 @@ def GP_relative():
                     print('partcp', row)
             else:
                 print('form', row)
-    with open('GP_relative.csv', 'w', encoding='utf-8') as f:
+    with open('GP_absolute.csv', 'w', encoding='utf-8') as f:
         HEADER = ('lemma', 'aspect', 'praes', 'fut', 'praet', 'inf', 'imper', 'gerund',
                   'partcp.act.past', 'partcp.act.nonpast', 'partcp.pass.past', 'partcp.pass.nonpast', 'rel_usage')
         writer = csv.writer(f, delimiter=',', quotechar='"')
@@ -94,6 +94,8 @@ def GP_relative():
                       freq_dic[verb]['partcp.act.nonpast'], freq_dic[verb]['partcp.pass.past'],
                       freq_dic[verb]['partcp.pass.nonpast']
                       ])
+            # for absolute figures!
+            #all = 1
             try:
                 row = (verb[0], verb[1], freq_dic[verb]['praes']/all, freq_dic[verb]['fut']/all, freq_dic[verb]['praet']/all,
                        freq_dic[verb]['inf']/all, freq_dic[verb]['imper']/all, freq_dic[verb]['gerund']/all,
