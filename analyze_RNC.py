@@ -7,6 +7,8 @@ import csv
 from pymystem3 import Mystem
 m = Mystem()
 
+# analyze RNC with mystem and print all the data in a big table
+
 PATH_TO_CORPUS = os.path.join(os.getcwd(), 'source/post1950')
 errors = open('Parse_errors.txt', 'w')
 RNC_f = open('feature_matrix_big.csv', 'w')

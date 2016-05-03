@@ -4,6 +4,8 @@ import lxml.etree as ET
 import os, csv
 from features import get_features
 
+# check hte disambiguated corpus and extract all the features for the verb pairs
+
 PATH_TO_CORPUS = os.path.join(os.getcwd(), 'source/post1950/anecdota')
 #PATH_TO_CORPUS = os.path.join(os.getcwd(), 'texts')
 PATH_TO_VERBS = ['verbs_prefixes.csv', 'verbs_zal.txt']

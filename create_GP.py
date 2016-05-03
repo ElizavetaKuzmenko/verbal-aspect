@@ -2,7 +2,7 @@
 import csv
 
 # 'token', 'lemma', 'aspect', 'form', 'transitivity', 'number', 'tense', 'mood', 'person', 'voice'
-
+# Read the data from the feature matrix and create grammatical profiles (absolute and relative)
 
 def GP_all():
     freq_dic = {}
@@ -48,7 +48,7 @@ def GP_relative():
             tense, mood = row[6:8]
             voice = row[-1]
             if (lemma, aspect) not in freq_dic:
-                freq_dic[(lemma, aspect)] = {'praes': 0, 'fut': 0, 'praet': 0, 'inf': 0, 'imper': 0, 'gerund': 0,
+                freq_dic[(lemma, aspect)] = {'nonpast': 0, 'praet': 0, 'inf': 0, 'imper': 0, 'gerund': 0,
                                              'partcp.act.past': 0, 'partcp.act.nonpast': 0, 'partcp.pass.past': 0,
                                              'partcp.pass.nonpast': 0}
             if form == 'fin':
@@ -56,9 +56,9 @@ def GP_relative():
                     if tense == 'praet':
                         freq_dic[(lemma, aspect)]['praet'] += 1
                     elif tense == 'praes':
-                        freq_dic[(lemma, aspect)]['praes'] += 1
+                        freq_dic[(lemma, aspect)]['nonpast'] += 1
                     elif tense == 'fut':
-                        freq_dic[(lemma, aspect)]['fut'] += 1
+                        freq_dic[(lemma, aspect)]['nonpast'] += 1
                     else:
                         print('tense', row)
                 elif mood == 'imper':
@@ -81,23 +81,25 @@ def GP_relative():
                     print('partcp', row)
             else:
                 print('form', row)
-    with open('GP_absolute.csv', 'w', encoding='utf-8') as f:
-        HEADER = ('lemma', 'aspect', 'praes', 'fut', 'praet', 'inf', 'imper', 'gerund',
+    with open('GP_relative.csv', 'w', encoding='utf-8') as f:
+        HEADER = ('lemma', 'aspect', 'nonpast', 'praet', 'inf', 'imper', 'gerund',
                   'partcp.act.past', 'partcp.act.nonpast', 'partcp.pass.past', 'partcp.pass.nonpast', 'rel_usage')
         writer = csv.writer(f, delimiter=',', quotechar='"')
         writer.writerow(HEADER)
         for verb in sorted(freq_dic):
             all = sum([
-                      freq_dic[verb]['praes'], freq_dic[verb]['fut'], freq_dic[verb]['praet'],
+                      freq_dic[verb]['nonpast'], freq_dic[verb]['praet'],
                       freq_dic[verb]['inf'], freq_dic[verb]['imper'], freq_dic[verb]['gerund'],
                       freq_dic[verb]['partcp.act.past'],
                       freq_dic[verb]['partcp.act.nonpast'], freq_dic[verb]['partcp.pass.past'],
                       freq_dic[verb]['partcp.pass.nonpast']
                       ])
+            if all < 100:
+                continue
             # for absolute figures!
             #all = 1
             try:
-                row = (verb[0], verb[1], freq_dic[verb]['praes']/all, freq_dic[verb]['fut']/all, freq_dic[verb]['praet']/all,
+                row = (verb[0], verb[1], freq_dic[verb]['nonpast']/all, freq_dic[verb]['praet']/all,
                        freq_dic[verb]['inf']/all, freq_dic[verb]['imper']/all, freq_dic[verb]['gerund']/all,
                        freq_dic[verb]['partcp.act.past']/all, freq_dic[verb]['partcp.act.nonpast']/all,
                        freq_dic[verb]['partcp.pass.past']/all, freq_dic[verb]['partcp.pass.nonpast']/all, all/all_verbs
