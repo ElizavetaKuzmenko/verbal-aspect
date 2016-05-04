@@ -26,14 +26,14 @@ def GP_all():
 
     print(len(freq_dic))
 
-    with open('grammatical_profiles.csv', 'w', encoding='utf-8') as f:
-        HEADER = ('lemma', 'form', 'frequency')
-        writer = csv.writer(f, delimiter=',', quotechar='"')
-        writer.writerow(HEADER)
-        for k in sorted(freq_dic):
-            for y in sorted(freq_dic[k], key=lambda y: -freq_dic[k][y]):
-                row = (k[0], k[1], y, freq_dic[k][y])
-                writer.writerow(row)
+    #with open('grammatical_profiles.csv', 'w', encoding='utf-8') as f:
+    #    HEADER = ('lemma', 'form', 'frequency')
+    #    writer = csv.writer(f, delimiter=',', quotechar='"')
+    #    writer.writerow(HEADER)
+    #    for k in sorted(freq_dic):
+    #        for y in sorted(freq_dic[k], key=lambda y: -freq_dic[k][y]):
+    #            row = (k[0], k[1], y, freq_dic[k][y])
+    #            writer.writerow(row)
 
 
 def GP_relative():
@@ -81,9 +81,9 @@ def GP_relative():
                     print('partcp', row)
             else:
                 print('form', row)
-    with open('GP_relative.csv', 'w', encoding='utf-8') as f:
-        HEADER = ('lemma', 'aspect', 'nonpast', 'praet', 'inf', 'imper', 'gerund',
-                  'partcp.act.past', 'partcp.act.nonpast', 'partcp.pass.past', 'partcp.pass.nonpast', 'rel_usage')
+    with open('GP_absolute.csv', 'w', encoding='utf-8') as f:
+        HEADER = ('lemma', 'aspect', 'nonpast', 'past', 'inf', 'imper', 'gerund',
+                  'partcp.act.past', 'partcp.act.nonpast', 'partcp.pass.past', 'partcp.pass.nonpast')
         writer = csv.writer(f, delimiter=',', quotechar='"')
         writer.writerow(HEADER)
         for verb in sorted(freq_dic):
@@ -97,12 +97,12 @@ def GP_relative():
             if all < 100:
                 continue
             # for absolute figures!
-            #all = 1
+            all = 1
             try:
                 row = (verb[0], verb[1], freq_dic[verb]['nonpast']/all, freq_dic[verb]['praet']/all,
                        freq_dic[verb]['inf']/all, freq_dic[verb]['imper']/all, freq_dic[verb]['gerund']/all,
                        freq_dic[verb]['partcp.act.past']/all, freq_dic[verb]['partcp.act.nonpast']/all,
-                       freq_dic[verb]['partcp.pass.past']/all, freq_dic[verb]['partcp.pass.nonpast']/all, all/all_verbs
+                       freq_dic[verb]['partcp.pass.past']/all, freq_dic[verb]['partcp.pass.nonpast']/all
                        )
                 writer.writerow(row)
             except ZeroDivisionError:
