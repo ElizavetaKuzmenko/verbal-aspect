@@ -39,6 +39,7 @@ def GP_all():
 def GP_relative():
     with open('feature_matrix.csv', 'r', encoding='utf-8') as f:
         all_verbs = len(f.readlines()) - 1
+        print(all_verbs)
     with open('feature_matrix.csv', 'r', encoding='utf-8') as f:
         reader = csv.reader(f, delimiter=',')
         header = next(reader)
@@ -83,7 +84,7 @@ def GP_relative():
                 print('form', row)
     with open('GP_absolute.csv', 'w', encoding='utf-8') as f:
         HEADER = ('lemma', 'aspect', 'nonpast', 'past', 'inf', 'imper', 'gerund',
-                  'partcp.act.past', 'partcp.act.nonpast', 'partcp.pass.past', 'partcp.pass.nonpast')
+                  'partcp.act.past', 'partcp.act.nonpast', 'partcp.pass.past', 'partcp.pass.nonpast', 'rel_usage')
         writer = csv.writer(f, delimiter=',', quotechar='"')
         writer.writerow(HEADER)
         for verb in sorted(freq_dic):
@@ -94,16 +95,16 @@ def GP_relative():
                       freq_dic[verb]['partcp.act.nonpast'], freq_dic[verb]['partcp.pass.past'],
                       freq_dic[verb]['partcp.pass.nonpast']
                       ])
-            if all < 100:
+            if all < 50:
                 continue
             # for absolute figures!
-            all = 1
+            #all = 1
             try:
-                row = (verb[0], verb[1], freq_dic[verb]['nonpast']/all, freq_dic[verb]['praet']/all,
-                       freq_dic[verb]['inf']/all, freq_dic[verb]['imper']/all, freq_dic[verb]['gerund']/all,
-                       freq_dic[verb]['partcp.act.past']/all, freq_dic[verb]['partcp.act.nonpast']/all,
-                       freq_dic[verb]['partcp.pass.past']/all, freq_dic[verb]['partcp.pass.nonpast']/all
-                       )
+                row = (verb[0], verb[1], freq_dic[verb]['nonpast'], freq_dic[verb]['praet'],
+                       freq_dic[verb]['inf'], freq_dic[verb]['imper'], freq_dic[verb]['gerund'],
+                       freq_dic[verb]['partcp.act.past'], freq_dic[verb]['partcp.act.nonpast'],
+                       freq_dic[verb]['partcp.pass.past'], freq_dic[verb]['partcp.pass.nonpast'],
+                       all)
                 writer.writerow(row)
             except ZeroDivisionError:
                 print(all, verb, freq_dic[verb])

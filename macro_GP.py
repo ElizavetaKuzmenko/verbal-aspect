@@ -4,15 +4,19 @@ import csv
 
 # create macro GP for verb groups from PCA
 
-groups = {}
+groups = {'pf': set(), 'ipf': set()}
 with open('imperfectivity.csv') as ipf:
     reader = csv.reader(ipf, delimiter=',')
     header = next(reader)
     for row in reader:
-        if 'i' + row[-1] in groups:
-            groups['i' + row[-1]].add(row[0])
-        else:
-            groups['i' + row[-1]] = set([row[0]])
+        if row[0].split(' ')[1] == 'pf':
+            groups['pf'].add(row[0])
+        elif row[0].split(' ')[1] == 'ipf':
+            groups['ipf'].add(row[0])
+        #if 'i' + row[-1] in groups:
+        #    groups['i' + row[-1]].add(row[0])
+        #else:
+        #    groups['i' + row[-1]] = set([row[0]])
 
 with open('perfectivity.csv') as pf:
     reader = csv.reader(pf, delimiter=',')
@@ -29,7 +33,7 @@ def write_groups():
             f.write(group + ',' + ','.join(groups[group]) + '\n')
     f.close()
 
-m = open('macro_GP_absolute.csv', 'w')
+m = open('macro_GP_absolute_overlap.csv', 'w')
 writer = csv.writer(m, delimiter = ',', quotechar = '"')
 header = ('group', 'praes', 'fut', 'praet', 'inf', 'imper', 'gerund',
           'partcp.act.past', 'partcp.act.nonpast', 'partcp.pass.past', 'partcp.pass.nonpast'
@@ -42,9 +46,8 @@ for group in groups:
         reader = csv.reader(f, delimiter=',')
         header = next(reader)
         print(group)
-        praes = 0
-        fut = 0
-        praet = 0
+        nonpast = 0
+        past = 0
         inf = 0
         imper = 0
         gerund = 0
@@ -57,20 +60,19 @@ for group in groups:
             row[2:] = [float(i) for i in row[2:]]
             if row[0] + ' ' + row[1] in groups[group]:
                 print(row[0])
-                praes += row[2]
-                fut += row[3]
-                praet += row[4]
-                inf += row[5]
-                imper += row[6]
-                gerund += row[7]
-                partcp_act_past += row[8]
-                partcp_act_nonpast += row[9]
-                partcp_pass_past += row[10]
-                partcp_pass_nonpast += row[11]
-                all += row[12]
+                nonpast += row[2]
+                past += row[3]
+                inf += row[4]
+                imper += row[5]
+                gerund += row[6]
+                partcp_act_past += row[7]
+                partcp_act_nonpast += row[8]
+                partcp_pass_past += row[9]
+                partcp_pass_nonpast += row[10]
+                all += row[11]
         try:
             all = 1
-            row_write = (group, praes/all, fut/all, praet/all, inf/all, imper/all, gerund/all,
+            row_write = (group, nonpast/all, past/all, inf/all, imper/all, gerund/all,
                 partcp_act_past/all, partcp_act_nonpast/all, partcp_pass_past/all, partcp_pass_nonpast/all
                 )
             writer.writerow(row_write)

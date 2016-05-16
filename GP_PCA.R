@@ -15,7 +15,7 @@ plot(GP.princomp)
 
 # Для абсолютных частотностей
 data <- read.csv("/home/lizaku/PycharmProjects/verbal-aspect/GP_relative.csv", header = T, sep = ",")
-dataAdjusted <- data[, 3:12] - apply(data[, 3:12], 1, mean)
+dataAdjusted <- data[, 3:11] - apply(data[, 3:11], 1, mean)
 rownames(dataAdjusted) <- paste(data$lemma,data$aspect)
 GP2.princomp <- princomp(dataAdjusted)
 
