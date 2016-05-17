@@ -35,7 +35,7 @@ def write_groups():
 
 m = open('macro_GP_absolute_overlap.csv', 'w')
 writer = csv.writer(m, delimiter = ',', quotechar = '"')
-header = ('group', 'praes', 'fut', 'praet', 'inf', 'imper', 'gerund',
+header = ('group', 'nonpast', 'past', 'inf', 'imper', 'gerund',
           'partcp.act.past', 'partcp.act.nonpast', 'partcp.pass.past', 'partcp.pass.nonpast'
           )
 writer.writerow(header)

@@ -11,7 +11,7 @@ def write_cats():
         reader = csv.reader(f, delimiter=',')
         header = next(reader)
         for row in reader:
-            if -0.2 <= float(row[2]) <= 0.2 and -0.2 <= float(row[1]) <= 0.2:
+            if -0.1 <= float(row[2]) <= 0.1 and -0.1 <= float(row[1]) <= 0.1:
                 ipf[row[0]] = (float(row[1]), float(row[2]), 2)
             #if float(row[2]) >= 0:
             #    if 0 <= float(row[2]) < 0.1:
